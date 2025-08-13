@@ -1,0 +1,28 @@
+nextflow_pipeline {
+
+    name "Test Workflow main.nf"
+    script "main.nf"
+
+    test("Should run without failures") {
+
+        when {
+            params {
+                patient_id = "PID_262622_"
+                samplesheet = "${projectDir}/tests/samplesheet.csv"
+                transcript_counts = "${projectDir}/tests/data/salmon.merged.transcript_counts.tsv"
+
+                outdir_base = "${projectDir}/tests/results/"
+                outdir_split_transcript_counts = "${projectDir}/tests/results/split_transcript_counts"
+                outdir_vcf_expression_annotator = "${projectDir}/tests/results/vcf_expression_annotator"
+                outdir_clean_vcf = "${projectDir}/tests/results/clean_vcf"
+            }
+        }
+
+        then {
+            assert workflow.success
+            println("Workflow completed successfully.")
+        }
+
+    }
+
+}

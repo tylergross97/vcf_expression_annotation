@@ -1,0 +1,74 @@
+nextflow_process {
+
+    name "Test Process CLEAN_VCF"
+    script "modules/clean_vcf.nf"
+    process "CLEAN_VCF"
+
+    test("Should run without failures for a single sample") {
+
+        when {
+            process {
+                """
+                input[0] = tuple(
+                    'E3E',
+                    'PID_262622_E3E_tumor_E3E',
+                    file("${projectDir}/tests/data/annotated_chr22_vcfs/PID_262622_E3E.expression_vep.chr22.vcf.gz")
+                )
+                input[1] = "PID_262622_"
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert process.out.clean_vcf.size() == 1
+            
+            def output_tuple = process.out.clean_vcf[0]
+            def sample_id = output_tuple[0]
+            def tumor_sample = output_tuple[1] 
+            def clean_vcf_path = path(output_tuple[2])
+            
+            // Test VCF content if the nft-vcf plugin works
+            def vcfFile = clean_vcf_path.vcf
+            println("VCF File Summary: ${vcfFile.summary}")
+        }
+    }
+
+    test("Should run without failures for multiple samples") {
+
+        when {
+            process {
+                """
+                input[0] = Channel.fromList([
+                    tuple(
+                        'E3E',
+                        'PID_262622_E3E_tumor_E3E',
+                        file("${projectDir}/tests/data/annotated_chr22_vcfs/PID_262622_E3E.expression_vep.chr22.vcf.gz")
+                    ),
+                    tuple(
+                        'ORIGINATOR',
+                        'PID_262622_ORIGINATOR_tumor_ORIGINATOR',
+                        file("${projectDir}/tests/data/annotated_chr22_vcfs/PID_262622_ORIGINATOR.expression_vep.chr22.vcf.gz")
+                    )
+                ])
+                input[1] = "PID_262622_"
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def output_tuples = process.out.clean_vcf
+            assert output_tuples.size() == 2, "Expected 2 output tuples, got ${output_tuples.size()}"
+            output_tuples.each { tuple ->
+                def sample_id = tuple[0]
+                def tumor_sample = tuple[1]
+                def clean_vcf_path = path(tuple[2])
+                
+                // Test VCF content if the nft-vcf plugin works
+                def vcfFile = clean_vcf_path.vcf
+                println("VCF File Summary: ${vcfFile.summary}")
+            }
+        }
+    }
+}

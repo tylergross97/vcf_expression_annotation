@@ -1,0 +1,67 @@
+nextflow_process {
+
+    name "Test Process VCF_TO_CSV"
+    script "modules/vcf_to_csv.nf"
+    process "VCF_TO_CSV"
+
+    test("Should run without failures for a single sample") {
+
+        when {
+            process {
+                """
+                input[0] = tuple(
+                    "E3E",
+                    "PID_262622_E3E_tumor_E3E",
+                    file("${projectDir}/tests/data/cleaned_chr22_vcfs/PID_262622_E3E.clean.vcf.gz")
+                ) 
+                input[1] = "PID_262622_"
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            println("Output: ${process.out.csv}")
+            def output_tuple = process.out.csv[0]
+            def csv_path = path(output_tuple[3])
+            def csvFile = csv_path.csv
+            println("CSV File Structure: ${csvFile.table.structure()}")
+
+        }
+
+    }
+    test("Should run without failures for multiple samples") {
+
+        when {
+            process {
+                """
+                input[0] = Channel.fromList([
+                    tuple(
+                        "E3E",
+                        "PID_262622_E3E_tumor_E3E",
+                        file("${projectDir}/tests/data/cleaned_chr22_vcfs/PID_262622_E3E.clean.vcf.gz")
+                    ),
+                    tuple(
+                        "ORIGINATOR",
+                        "PID_262622_ORIGINATOR_tumor_ORIGINATOR",
+                        file("${projectDir}/tests/data/cleaned_chr22_vcfs/PID_262622_ORIGINATOR.clean.vcf.gz")
+                    )
+                ])
+                input[1] = "PID_262622_"
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def output_tuples = process.out.csv
+            assert output_tuples.size() == 2, "Expected 2 output tuples, got ${output_tuples.size()}"
+            output_tuples.each { tuple ->
+                def csv_path = path(tuple[3])
+                def csvFile = csv_path.csv
+                println("CSV File Structure: ${csvFile.table.structure()}")
+            }
+        }
+
+    }
+}

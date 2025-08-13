@@ -1,0 +1,30 @@
+nextflow_process {
+
+    name "Test Process SPLIT_TRANSCRIPT_COUNTS"
+    script "modules/split_transcript_counts.nf"
+    process "SPLIT_TRANSCRIPT_COUNTS"
+
+    test("Should run without failures") {
+
+        when {
+            process {
+                """
+                input[0] = file("${projectDir}/tests/data/salmon.merged.transcript_counts.tsv")
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def output_files = process.out.split_transcript_counts[0]
+            assert output_files.size() == 4, "Expected 4 files, got ${output_files.size()}"
+            output_files.each { file ->
+                def csvFile = path(file).csv(sep: "\t")
+                assert csvFile.columnCount == 2, "Expected 2 columns in ${file}, got ${csvFile.columnCount}"
+                assert csvFile.rowCount == 254129, "Expected 254129 rows in ${file}, got ${csvFile.rowCount}"
+            }
+        }
+
+    }
+
+}

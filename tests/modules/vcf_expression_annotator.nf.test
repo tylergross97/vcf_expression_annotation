@@ -1,0 +1,82 @@
+import java.util.zip.GZIPInputStream
+
+nextflow_process {
+
+    name "Test Process VCF_EXPRESSION_ANNOTATOR"
+    script "modules/vcf_expression_annotator.nf"
+    process "VCF_EXPRESSION_ANNOTATOR"
+
+    test("Should run without failures for a single sample") {
+
+        when {
+            process {
+                """
+                input[0] = tuple(
+                    "E3E",
+                    file("${projectDir}/tests/data/chr22_vcfs/tumor_E3E_vs_normal_E3E.mutect2.filtered_VEP.ann.chr22.vcf.gz"),
+                    "PID_262622_E3E_tumor_E3E",
+                    file("${projectDir}/tests/data/split_transcript_counts/PID_262622_E3E.tsv")
+                ) 
+                input[1] = "PID_262622_"
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            println("Output: ${process.out.expression_vep_vcf}")
+            def output_tuple = process.out.expression_vep_vcf[0]
+            def vcf_path = path(output_tuple[2])
+            def lines = new GZIPInputStream(new FileInputStream(vcf_path.toString())).getText('UTF-8').readLines()
+            def header_lines = lines.findAll { it.startsWith('##FORMAT=') }
+            def tx_format = header_lines.find { it.contains('ID=TX') }
+            println "TX field found in FORMAT column: ${tx_format}"
+            assert tx_format != null : "TX field not found in FORMAT column"
+            def vcfFile = vcf_path.vcf
+            println("VCF File Summary: ${vcfFile.summary}")
+        }
+
+    }
+
+    test("Should run without failures for multiple samples") {
+
+        when {
+            process {
+                """
+                input[0] = Channel.fromList([
+                    tuple(
+                        "E3E",
+                        file("${projectDir}/tests/data/chr22_vcfs/tumor_E3E_vs_normal_E3E.mutect2.filtered_VEP.ann.chr22.vcf.gz"),
+                        "PID_262622_E3E_tumor_E3E",
+                        file("${projectDir}/tests/data/split_transcript_counts/PID_262622_E3E.tsv")
+                    ),
+                    tuple(
+                        "ORIGINATOR",
+                        file("${projectDir}/tests/data/chr22_vcfs/tumor_ORIGINATOR_vs_normal_ORIGINATOR.mutect2.filtered_VEP.ann.chr22.vcf.gz"),
+                        "PID_262622_ORIGINATOR_tumor_ORIGINATOR",
+                        file("${projectDir}/tests/data/split_transcript_counts/PID_262622_ORIGINATOR.tsv")
+                    )
+                ])
+                input[1] = "PID_262622_"
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            println("Output: ${process.out}")
+            def output_tuples = process.out.expression_vep_vcf
+            assert output_tuples.size() == 2, "Expected 2 output tuples, got ${output_tuples.size()}"
+            output_tuples.each { tuple ->
+                def vcf_path = path(tuple[2])
+                def lines = new GZIPInputStream(new FileInputStream(vcf_path.toString())).getText('UTF-8').readLines()
+                def header_lines = lines.findAll { it.startsWith('##FORMAT=') }
+                def tx_format = header_lines.find { it.contains('ID=TX') }
+                println "TX field found in FORMAT column: ${tx_format}"
+                assert tx_format != null : "TX field not found in FORMAT column for sample ${tuple[0]}"
+                def vcfFile = vcf_path.vcf
+                println("VCF File Summary for sample ${tuple[0]}: ${vcfFile.summary}")
+            }
+        }
+    }
+}

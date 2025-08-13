@@ -1,0 +1,13 @@
+.DS_Store
+
+**/.nf-test*/**
+.nf-test.log
+
+tests/results/
+tests/results/**
+
+.nextflow/
+.nextflow/**
+
+work/
+work/**

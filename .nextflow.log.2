@@ -1,0 +1,102 @@
+Aug-12 19:35:05.964 [main] DEBUG nextflow.cli.Launcher - $> nextflow run main.nf --patient_id PID_262622_ --samplesheet /projects/academic/rpili/Jonathan_Lovell_project/samplesheets/pdmr/PID_262622/vcf_expression_annotator.csv --transcript_counts /projects/academic/rpili/Jonathan_Lovell_project/results/pdmr/PID_262622/rnaseq/star_salmon/salmon.merged.transcript_counts.tsv --outdir_base /projects/academic/rpili/Jonathan_Lovell_project/results/pdmr/PID_262622/vcf_expression_annotator/ -profile singularity
+Aug-12 19:35:06.084 [main] DEBUG nextflow.cli.CmdRun - N E X T F L O W  ~  version 25.04.4
+Aug-12 19:35:06.144 [main] DEBUG nextflow.plugin.PluginsFacade - Setting up plugin manager > mode=prod; embedded=false; plugins-dir=/projects/academic/rpili/tgross2/tmp/.nextflow/plugins; core-plugins: nf-amazon@2.15.0,nf-azure@1.16.0,nf-cloudcache@0.4.3,nf-codecommit@0.2.3,nf-console@1.2.1,nf-google@1.21.0,nf-k8s@1.0.0,nf-tower@1.11.3,nf-wave@1.12.1
+Aug-12 19:35:06.212 [main] INFO  o.pf4j.DefaultPluginStatusProvider - Enabled plugins: []
+Aug-12 19:35:06.213 [main] INFO  o.pf4j.DefaultPluginStatusProvider - Disabled plugins: []
+Aug-12 19:35:06.217 [main] INFO  org.pf4j.DefaultPluginManager - PF4J version 3.12.0 in 'deployment' mode
+Aug-12 19:35:06.244 [main] INFO  org.pf4j.AbstractPluginManager - No plugins
+Aug-12 19:35:06.277 [main] DEBUG nextflow.config.ConfigBuilder - Found config local: /projects/academic/rpili/Jonathan_Lovell_project/scripts/vcf_expression_annotator/nextflow.config
+Aug-12 19:35:06.282 [main] DEBUG nextflow.config.ConfigBuilder - Parsing config file: /projects/academic/rpili/Jonathan_Lovell_project/scripts/vcf_expression_annotator/nextflow.config
+Aug-12 19:35:06.338 [main] DEBUG n.secret.LocalSecretsProvider - Secrets store: /projects/academic/rpili/tgross2/tmp/.nextflow/secrets/store.json
+Aug-12 19:35:06.344 [main] DEBUG nextflow.secret.SecretsLoader - Discovered secrets providers: [nextflow.secret.LocalSecretsProvider@70807224] - activable => nextflow.secret.LocalSecretsProvider@70807224
+Aug-12 19:35:06.364 [main] DEBUG nextflow.config.ConfigBuilder - Applying config profile: `singularity`
+Aug-12 19:35:06.981 [main] DEBUG nextflow.config.ConfigBuilder - Available config profiles: [test, singularity, docker]
+Aug-12 19:35:07.015 [main] DEBUG nextflow.cli.CmdRun - Applied DSL=2 from script declaration
+Aug-12 19:35:07.057 [main] DEBUG nextflow.cli.CmdRun - Launching `main.nf` [grave_gauss] DSL2 - revision: c94a42da7e
+Aug-12 19:35:07.059 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins default=[]
+Aug-12 19:35:07.059 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins resolved requirement=[]
+Aug-12 19:35:07.166 [main] DEBUG nextflow.Session - Session UUID: 624cc827-e025-4b7f-9521-1b7d408b5789
+Aug-12 19:35:07.166 [main] DEBUG nextflow.Session - Run name: grave_gauss
+Aug-12 19:35:07.167 [main] DEBUG nextflow.Session - Executor pool size: 32
+Aug-12 19:35:07.179 [main] DEBUG nextflow.file.FilePorter - File porter settings maxRetries=3; maxTransfers=50; pollTimeout=null
+Aug-12 19:35:07.188 [main] DEBUG nextflow.util.ThreadPoolBuilder - Creating thread pool 'FileTransfer' minSize=10; maxSize=96; workQueue=LinkedBlockingQueue[-1]; allowCoreThreadTimeout=false
+Aug-12 19:35:07.266 [main] DEBUG nextflow.cli.CmdRun - 
+  Version: 25.04.4 build 5950
+  Created: 16-06-2025 14:23 UTC 
+  System: Linux 6.8.0-60-generic
+  Runtime: Groovy 4.0.26 on OpenJDK 64-Bit Server VM 21.0.2+13-58
+  Encoding: UTF-8 (UTF-8)
+  Process: 274630@cpn-h22-16.core.ccr.buffalo.edu [10.17.7.204]
+  CPUs: 32 - Mem: 503.2 GB (385.7 GB) - Swap: 0 (0)
+Aug-12 19:35:07.348 [main] DEBUG nextflow.Session - Work-dir: /vscratch/grp-rpili/neoantigen_prediction/vcf_expression_annotation/PID_262622 [nfs]
+Aug-12 19:35:07.349 [main] DEBUG nextflow.Session - Script base path does not exist or is not a directory: /projects/academic/rpili/Jonathan_Lovell_project/scripts/vcf_expression_annotator/bin
+Aug-12 19:35:07.375 [main] DEBUG nextflow.executor.ExecutorFactory - Extension executors providers=[]
+Aug-12 19:35:07.394 [main] DEBUG nextflow.Session - Observer factory: DefaultObserverFactory
+Aug-12 19:35:07.400 [main] DEBUG nextflow.Session - Observer factory (v2): LinObserverFactory
+Aug-12 19:35:07.440 [main] DEBUG nextflow.cache.CacheFactory - Using Nextflow cache factory: nextflow.cache.DefaultCacheFactory
+Aug-12 19:35:07.460 [main] DEBUG nextflow.util.CustomThreadPool - Creating default thread pool > poolSize: 33; maxThreads: 1000
+Aug-12 19:35:07.640 [main] DEBUG nextflow.Session - Session start
+Aug-12 19:35:08.064 [main] DEBUG nextflow.script.ScriptRunner - > Launching execution
+Aug-12 19:35:08.484 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Aug-12 19:35:08.485 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Aug-12 19:35:08.490 [main] DEBUG nextflow.executor.Executor - [warm up] executor > local
+Aug-12 19:35:08.498 [main] DEBUG n.processor.LocalPollingMonitor - Creating local task monitor for executor 'local' > cpus=32; memory=503.2 GB; capacity=32; pollInterval=100ms; dumpInterval=5m
+Aug-12 19:35:08.503 [main] DEBUG n.processor.TaskPollingMonitor - >>> barrier register (monitor: local)
+Aug-12 19:35:08.526 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'SPLIT_TRANSCRIPT_COUNTS': maxForks=0; fair=false; array=0
+Aug-12 19:35:08.630 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Aug-12 19:35:08.630 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Aug-12 19:35:08.631 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'VCF_EXPRESSION_ANNOTATOR': maxForks=0; fair=false; array=0
+Aug-12 19:35:08.639 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Aug-12 19:35:08.639 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Aug-12 19:35:08.640 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'CLEAN_VCF': maxForks=0; fair=false; array=0
+Aug-12 19:35:08.652 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Aug-12 19:35:08.652 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Aug-12 19:35:08.653 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'VCF_TO_CSV': maxForks=0; fair=false; array=0
+Aug-12 19:35:08.656 [main] DEBUG nextflow.Session - Workflow process names [dsl2]: CLEAN_VCF, VCF_EXPRESSION_ANNOTATOR, SPLIT_TRANSCRIPT_COUNTS, VCF_TO_CSV
+Aug-12 19:35:08.660 [main] DEBUG nextflow.Session - Igniting dataflow network (7)
+Aug-12 19:35:08.675 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > SPLIT_TRANSCRIPT_COUNTS
+Aug-12 19:35:08.676 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > VCF_EXPRESSION_ANNOTATOR
+Aug-12 19:35:08.676 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > CLEAN_VCF
+Aug-12 19:35:08.678 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > VCF_TO_CSV
+Aug-12 19:35:08.678 [main] DEBUG nextflow.script.ScriptRunner - Parsed script files:
+  Script_453fe7c4bfa2ad33: /projects/academic/rpili/Jonathan_Lovell_project/scripts/vcf_expression_annotator/modules/split_transcript_counts.nf
+  Script_07c56f80073cffb6: /projects/academic/rpili/Jonathan_Lovell_project/scripts/vcf_expression_annotator/modules/vcf_to_csv.nf
+  Script_6f4aed9c770db2d2: /projects/academic/rpili/Jonathan_Lovell_project/scripts/vcf_expression_annotator/main.nf
+  Script_9eec495c7e2c478b: /projects/academic/rpili/Jonathan_Lovell_project/scripts/vcf_expression_annotator/modules/vcf_expression_annotator.nf
+  Script_1060ab9d2aa3c575: /projects/academic/rpili/Jonathan_Lovell_project/scripts/vcf_expression_annotator/modules/clean_vcf.nf
+Aug-12 19:35:08.678 [main] DEBUG nextflow.script.ScriptRunner - > Awaiting termination 
+Aug-12 19:35:08.679 [main] DEBUG nextflow.Session - Session await
+Aug-12 19:35:08.800 [Actor Thread 17] INFO  nextflow.container.SingularityCache - Pulling Singularity image docker://community.wave.seqera.io/library/pandas_python:4330fd07d14e9bfb [cache /projects/academic/rpili/tgross2/singularity_cache/community.wave.seqera.io-library-pandas_python-4330fd07d14e9bfb.img]
+Aug-12 19:38:47.797 [Actor Thread 17] DEBUG nextflow.container.SingularityCache - Singularity pull complete image=docker://community.wave.seqera.io/library/pandas_python:4330fd07d14e9bfb path=/projects/academic/rpili/tgross2/singularity_cache/community.wave.seqera.io-library-pandas_python-4330fd07d14e9bfb.img
+Aug-12 19:38:47.941 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Aug-12 19:38:47.946 [Task submitter] INFO  nextflow.Session - [d0/58f7d0] Submitted process > SPLIT_TRANSCRIPT_COUNTS (1)
+Aug-12 19:38:52.911 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 1; name: SPLIT_TRANSCRIPT_COUNTS (1); status: COMPLETED; exit: 0; error: -; workDir: /vscratch/grp-rpili/neoantigen_prediction/vcf_expression_annotation/PID_262622/d0/58f7d0676e9a1f45fc0e453cbb9788]
+Aug-12 19:38:52.912 [Task monitor] DEBUG nextflow.util.ThreadPoolBuilder - Creating thread pool 'TaskFinalizer' minSize=10; maxSize=96; workQueue=LinkedBlockingQueue[-1]; allowCoreThreadTimeout=false
+Aug-12 19:38:52.955 [TaskFinalizer-1] ERROR n.processor.TaskPollingMonitor - Unexpected error while finalizing task 'SPLIT_TRANSCRIPT_COUNTS (1)' - cause: Target path for directive publishDir cannot be null
+Aug-12 19:38:52.956 [TaskFinalizer-1] DEBUG nextflow.Session - Session aborted -- Cause: Target path for directive publishDir cannot be null
+Aug-12 19:38:52.969 [TaskFinalizer-1] DEBUG nextflow.Session - The following nodes are still active:
+[process] VCF_EXPRESSION_ANNOTATOR
+  status=ACTIVE
+  port 0: (queue) OPEN  ; channel: -
+  port 1: (value) bound ; channel: patient_id
+  port 2: (cntrl) -     ; channel: $
+
+[process] CLEAN_VCF
+  status=ACTIVE
+  port 0: (queue) OPEN  ; channel: -
+  port 1: (value) bound ; channel: patient_id
+  port 2: (cntrl) -     ; channel: $
+
+[process] VCF_TO_CSV
+  status=ACTIVE
+  port 0: (queue) OPEN  ; channel: -
+  port 1: (value) bound ; channel: patient_id
+  port 2: (cntrl) -     ; channel: $
+
+Aug-12 19:38:52.971 [Actor Thread 31] INFO  nextflow.container.SingularityCache - Pulling Singularity image docker://griffithlab/vatools:latest [cache /projects/academic/rpili/tgross2/singularity_cache/griffithlab-vatools-latest.img]
+Aug-12 19:38:52.972 [main] DEBUG nextflow.Session - Session await > all processes finished
+Aug-12 19:38:52.972 [main] DEBUG nextflow.Session - Session await > all barriers passed
+Aug-12 19:38:52.973 [Task monitor] DEBUG n.processor.TaskPollingMonitor - <<< barrier arrives (monitor: local) - terminating tasks monitor poll loop
+Aug-12 19:38:52.979 [main] DEBUG n.trace.WorkflowStatsObserver - Workflow completed > WorkflowStats[succeededCount=0; failedCount=0; ignoredCount=0; cachedCount=0; pendingCount=0; submittedCount=0; runningCount=1; retriesCount=0; abortedCount=0; succeedDuration=0ms; failedDuration=0ms; cachedDuration=0ms;loadCpus=1; loadMemory=0; peakRunning=1; peakCpus=1; peakMemory=0; ]
+Aug-12 19:38:53.180 [main] DEBUG nextflow.cache.CacheDB - Closing CacheDB done
+Aug-12 19:38:53.241 [main] DEBUG nextflow.script.ScriptRunner - > Execution complete -- Goodbye
