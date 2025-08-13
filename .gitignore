@@ -11,3 +11,5 @@ tests/results/**
 
 work/
 work/**
+
+.nextflow.log*
