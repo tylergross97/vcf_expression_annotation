@@ -13,3 +13,6 @@ work/
 work/**
 
 .nextflow.log*
+
+*.sh
+
