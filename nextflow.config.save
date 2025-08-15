@@ -1,12 +1,4 @@
-manifest {
-    name = "tylergross97/vcf_expression_annotator"
-    author = "Tyler Gross"
-    description = "Nextflow workflow for annotating VCF files with expression data from transcript counts."
-    version = "1.0.0"
-    mainScript = "main.nf"
-    homePage = "https://github.com/tylergross97/vcf_expression_annotator"
-    defaultBranch = "main"
-}
+
 
 params {
     // Required parameters
