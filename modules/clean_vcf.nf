@@ -16,23 +16,23 @@ process CLEAN_VCF {
     import gzip
     import re
 
-    def clean_cds_position(cds_pos):
-        \"\"\"Clean problematic CDS position annotations\"\"\"
-        if not cds_pos or cds_pos == "":
+    def clean_position_field(pos_field):
+        \"\"\"Clean problematic position annotations (works for both CDS and Protein positions)\"\"\"
+        if not pos_field or pos_field == "":
             return ""
 
-        # Handle patterns like "?-1/8553", "3107-?/3108", etc.
-        if "?" in cds_pos:
+        # Handle patterns like "?-606/735", "3107-?/3108", etc.
+        if "?" in pos_field:
             # Try to extract meaningful numbers
-            if "/" in cds_pos:
-                parts = cds_pos.split("/")
+            if "/" in pos_field:
+                parts = pos_field.split("/")
                 numerator = parts[0]
                 denominator = parts[1]
 
                 # Clean numerator
                 if "?" in numerator:
                     if "-" in numerator:
-                        # Handle "?-1" -> "1", "3107-?" -> "3107"
+                        # Handle "?-606" -> "606", "3107-?" -> "3107"
                         nums = re.findall(r"\\d+", numerator)
                         if nums:
                             numerator = nums[-1]  # Take the last number
@@ -52,13 +52,13 @@ process CLEAN_VCF {
                 return f"{numerator}/{denominator}"
             else:
                 # Single value with ?
-                nums = re.findall(r"\\d+", cds_pos)
+                nums = re.findall(r"\\d+", pos_field)
                 if nums:
                     return nums[0]
                 else:
                     return "1"
 
-        return cds_pos
+        return pos_field
 
     def clean_vcf_line(line):
         \"\"\"Clean a VCF line by fixing problematic CSQ annotations\"\"\"
@@ -80,9 +80,11 @@ process CLEAN_VCF {
         cleaned_annotations = []
         for annotation in annotations:
             fields = annotation.split("|")
-            if len(fields) >= 14:  # Make sure we have enough fields
+            if len(fields) >= 15:  # Make sure we have enough fields
                 # Clean CDS_position field (index 13, 0-based)
-                fields[13] = clean_cds_position(fields[13])
+                fields[13] = clean_position_field(fields[13])
+                # Clean Protein_position field (index 14, 0-based) - THIS WAS MISSING!
+                fields[14] = clean_position_field(fields[14])
             cleaned_annotations.append("|".join(fields))
 
         # Reconstruct the CSQ field
