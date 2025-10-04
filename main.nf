@@ -54,6 +54,7 @@ def validateParameters() {
 }
 
 workflow {
+    main:
     // Validate parameters (skip if using test profile)
     if (workflow.profile != 'test') {
         validateParameters()
@@ -108,5 +109,26 @@ workflow {
     VCF_EXPRESSION_ANNOTATOR(ch_joined, ch_patient_id)
     CLEAN_VCF(VCF_EXPRESSION_ANNOTATOR.out.expression_vep_vcf, ch_patient_id)
     VCF_TO_CSV(CLEAN_VCF.out.clean_vcf, ch_patient_id)
+
+    publish:
+    split_transcript_counts = SPLIT_TRANSCRIPT_COUNTS.out.split_transcript_counts
+    expression_annotated_vcf = VCF_EXPRESSION_ANNOTATOR.out.expression_vep_vcf
+    cleaned_vcf = CLEAN_VCF.out.clean_vcf
+    neoantigen_csv = VCF_TO_CSV.out.csv
+}
+
+output {
+    split_transcript_counts {
+        path 'split_transcript_counts'
+    }
+    expression_annotated_vcf {
+        path { sample_id, tumor_sample, vcf -> "vcf_expression_annotator/${sample_id}" }
+    }
+    cleaned_vcf {
+        path { sample_id, tumor_sample, vcf -> "clean_vcf/${sample_id}" }
+    }
+    neoantigen_csv {
+        path { patient_id, sample_id, tumor_sample, csv -> "vcf_to_csv/${sample_id}" }
+    }
 }
 
