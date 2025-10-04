@@ -20,6 +20,32 @@ nextflow run main.nf -profile docker \
     --outdir results
 ```
 
+## Cloud vs Local Execution
+
+This pipeline supports both **local** and **cloud** execution with intelligent defaults:
+
+### Cloud Execution (Seqera Platform)
+When running on cloud infrastructure (AWS Batch, Google Batch, Azure Batch):
+- **HTML reports are disabled by default** (report.html, timeline.html, dag.html)
+  - These reports contain relative paths that don't work in cloud storage browsers
+  - Use Seqera Platform's built-in execution timeline and reports instead
+- **Pipeline outputs** (VCF files, CSV files) are published to your specified `--outdir`
+- **Trace file** (trace.txt) is always generated as it's plain text
+
+### Local Execution
+When running on your local machine or HPC:
+- **All reports are enabled by default**
+- Download and view HTML reports locally in your browser
+- Outputs are published to the local `--outdir` directory
+
+### Force Enable Reports
+To force enable HTML reports on cloud (not recommended):
+```bash
+nextflow run tylergross97/vcf_expression_annotation --enable_reports true
+```
+
+
+
 **Requirements:** Nextflow ≥23.04.0, Docker/Singularity
 
 ## Input
