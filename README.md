@@ -133,7 +133,7 @@ nf-test test . --profile test,docker --verbose
 
 ## Citations
 
-If you use this pipeline in your work, please cite: [Tyler Gross] (2025). Xengsort Nextflow Pipeline [Computer software]. https://github.com/tylergross97/vcf_expression_annotation
+If you use this pipeline in your work, please cite: [Tyler Gross] (2025). VCF Expression Annotator Nextflow Pipeline [Computer software]. https://github.com/tylergross97/vcf_expression_annotation
 
 This pipeline uses the following tools that should be cited independently:
 
