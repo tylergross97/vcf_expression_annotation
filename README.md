@@ -2,7 +2,7 @@
 
 This nextflow pipeline is designed to add transcript-level expression values from nf-core/rnaseq to a VEP-annotated VCF file from nf-core/sarek
 
-This pipeline is intended to improve usability of the existing [vcf-expression-annotator - VAtools](https://github.com/griffithlab/VAtools) from the Griffith Lab. 
+This pipeline provides Nextflow functionality [vcf-expression-annotator - VAtools](https://github.com/griffithlab/VAtools) from the Griffith Lab. 
 
 ## Workflow
 
@@ -130,3 +130,13 @@ The nf-test infrastructure is set up for unit testing. If you'd like to contribu
 ```bash
 nf-test test . --profile test,docker --verbose
 ```
+
+## Citations
+
+If you use this pipeline in your work, please cite: [Tyler Gross] (2025). Xengsort Nextflow Pipeline [Computer software]. https://github.com/tylergross97/vcf_expression_annotation
+
+This pipeline uses the following tools that should be cited independently:
+
+1. Di Tommaso, P., Chatzou, M., Floden, E. W., Barja, P. P., Palumbo, E., & Notredame, C. (2017). Nextflow enables reproducible computational workflows. Nature biotechnology, 35(4), 316-319.
+2. https://github.com/griffithlab/VAtools
+
