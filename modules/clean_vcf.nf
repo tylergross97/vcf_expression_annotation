@@ -17,9 +17,9 @@ process CLEAN_VCF {
     import re
 
     def clean_position_field(pos_field):
-        \"\"\"Ensure CDS/Protein positions are numeric (avoid '').\"\"\"
-        if not pos_field or pos_field.strip() == "":
-            return "1"  # fallback to avoid empty string
+        \"\"\"Ensure CDS/Protein positions are numeric (avoid empty strings).\"\"\"
+        if not pos_field or pos_field.strip() == "" or pos_field == ".":
+            return "1/1000"  # Return full format with default values
 
         # Handle ranges like ?-606/735 or 3107-?/3108
         if "?" in pos_field:
@@ -38,10 +38,38 @@ process CLEAN_VCF {
                 return f"{num}/{denom}"
             else:
                 nums = re.findall(r"\\d+", pos_field)
-                return nums[0] if nums else "1"
+                num = nums[0] if nums else "1"
+                return f"{num}/1000"
 
-        # Already numeric/range
-        return pos_field
+        # Handle positions without denominator
+        if "/" not in pos_field:
+            # Extract numeric part
+            nums = re.findall(r"\\d+", pos_field)
+            if nums:
+                return f"{nums[0]}/1000"
+            else:
+                return "1/1000"
+
+        # Already in numeric/range format
+        parts = pos_field.split("/")
+        if len(parts) == 2:
+            # Validate both parts
+            try:
+                # Check if numerator part has numbers
+                num_part = parts[0].split("-")[0] if "-" in parts[0] else parts[0]
+                if not num_part or not re.search(r"\\d", num_part):
+                    return "1/1000"
+                
+                # Check if denominator has numbers
+                if not parts[1] or not re.search(r"\\d", parts[1]):
+                    nums = re.findall(r"\\d+", num_part)
+                    return f"{nums[0] if nums else '1'}/1000"
+                    
+                return pos_field
+            except:
+                return "1/1000"
+        
+        return "1/1000"
 
     def add_missing_format_headers(line, missing_formats):
         \"\"\"Add missing FORMAT field definitions to VCF header\"\"\"
@@ -53,9 +81,15 @@ process CLEAN_VCF {
             if "PS" in missing_formats:
                 format_lines.append('##FORMAT=<ID=PS,Number=1,Type=Integer,Description="Phase set identifier">')
             if "PID" in missing_formats:
-                format_lines.append('##FORMAT=<ID=PID,Number=1,Type=String,Description="Physical phasing ID information, where each unique ID within a given sample (but not across samples) connects records within a phasing group">')
+                format_lines.append('##FORMAT=<ID=PID,Number=1,Type=String,Description="Physical phasing ID information">')
             if "TX" in missing_formats:
                 format_lines.append('##FORMAT=<ID=TX,Number=.,Type=String,Description="Transcript effect annotation">')
+            if "GQ" in missing_formats:
+                format_lines.append('##FORMAT=<ID=GQ,Number=1,Type=Integer,Description="Genotype Quality">')
+            if "PL" in missing_formats:
+                format_lines.append('##FORMAT=<ID=PL,Number=G,Type=Integer,Description="Phred-scaled genotype likelihoods">')
+            if "PGT" in missing_formats:
+                format_lines.append('##FORMAT=<ID=PGT,Number=1,Type=String,Description="Physical phasing haplotype information">')
             
             return "\\n".join(format_lines) + "\\n" + line
         return line
@@ -104,6 +138,9 @@ process CLEAN_VCF {
             return line
 
         parts = line.strip().split("\\t")
+        if len(parts) < 8:
+            return line + "\\n"
+            
         info_field = parts[7]
 
         # Match CSQ field (VEP annotation)
@@ -146,11 +183,11 @@ process CLEAN_VCF {
                     break
 
         # Determine what FORMAT fields need to be added
-        required_formats = {"PS", "PID", "TX"}
+        required_formats = {"PS", "PID", "TX", "GQ", "PL", "PGT"}
         missing_formats = required_formats - existing_formats
         
         print(f"Existing FORMAT fields: {existing_formats}", file=sys.stderr)
-        print(f"Missing FORMAT fields: {missing_formats}", file=sys.stderr)
+        print(f"Missing FORMAT fields to add: {missing_formats}", file=sys.stderr)
 
         # Second pass: clean and add missing fields
         with opener(input_file, mode) as infile, gzip.open(output_file, "wt") as outfile:
@@ -172,9 +209,12 @@ process CLEAN_VCF {
                 except Exception as e:
                     print(f"Error processing line {line_num}: {e}", file=sys.stderr)
                     print(f"Problematic line: {line[:120]}...", file=sys.stderr)
-                    continue  # skip problematic lines
+                    # Write original line to avoid data loss
+                    outfile.write(line)
+                    continue
 
-        print(f"VCF cleaning completed. Added FORMAT fields: {missing_formats}", file=sys.stderr)
+        print(f"VCF cleaning completed.", file=sys.stderr)
+        print(f"Added FORMAT fields: {missing_formats}", file=sys.stderr)
         print(f"Output written to {output_file}", file=sys.stderr)
 
     # Run cleaner
