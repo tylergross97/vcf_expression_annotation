@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/tylergross97/vcf_expression_annotator//nextflow_schema.json",
+  "title": "tylergross97/vcf_expression_annotator pipeline parameters",
+  "description": "Nextflow workflow for annotating VCF files with expression data from transcript counts.",
+  "type": "object",
+  "properties": {
+    "patient_id": {
+      "type": "string"
+    },
+    "samplesheet": {
+      "type": "string"
+    },
+    "transcript_counts": {
+      "type": "string"
+    },
+    "outdir_base": {
+      "type": "string"
+    },
+    "outdir_split_transcript_counts": {
+      "type": "string"
+    },
+    "outdir_vcf_expression_annotator": {
+      "type": "string"
+    },
+    "outdir_clean_vcf": {
+      "type": "string"
+    }
+  }
+}
