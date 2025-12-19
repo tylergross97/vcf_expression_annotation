@@ -62,6 +62,7 @@ This pipeline provides production-ready Nextflow functionality for [vcf-expressi
 ## 📊 Workflow Overview
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#e1f5ff','primaryTextColor':'#000','primaryBorderColor':'#333','lineColor':'#333','secondaryColor':'#fff4e6','tertiaryColor':'#f0f9ff','nodeTextColor':'#000','textColor':'#000','labelTextColor':'#000'}}}%%
 graph TB
     subgraph Inputs
         A[transcript_counts.tsv<br/>Merged RNA-seq counts]
@@ -92,16 +93,16 @@ graph TB
     I --> F
     F --> J
     
-    style A fill:#e1f5ff
-    style B fill:#e1f5ff
-    style C fill:#fff4e6
-    style D fill:#fff4e6
-    style E fill:#fff4e6
-    style F fill:#fff4e6
-    style G fill:#f0f9ff
-    style H fill:#f0f9ff
-    style I fill:#f0f9ff
-    style J fill:#f0f9ff
+    style A fill:#e1f5ff,color:#000
+    style B fill:#e1f5ff,color:#000
+    style C fill:#fff4e6,color:#000
+    style D fill:#fff4e6,color:#000
+    style E fill:#fff4e6,color:#000
+    style F fill:#fff4e6,color:#000
+    style G fill:#f0f9ff,color:#000
+    style H fill:#f0f9ff,color:#000
+    style I fill:#f0f9ff,color:#000
+    style J fill:#f0f9ff,color:#000
 ```
 
 ### Process Details
