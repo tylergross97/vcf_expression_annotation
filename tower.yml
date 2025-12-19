@@ -9,15 +9,13 @@ reports:
   clean_vcf:
     display: "Cleaned VCF Files"
     patterns:
-      - "**/clean_vcf/*.vcf.gz"
-      - "**/clean_vcf/*.vcf.gz.tbi"
+      - "**/clean_vcf/*.vcf.gz*"
   
   # Expression-annotated VCF files from VCF_EXPRESSION_ANNOTATOR process
   expression_vcf:
     display: "Expression-Annotated VCF Files"
     patterns:
-      - "**/vcf_expression_annotator/*.vcf.gz"
-      - "**/vcf_expression_annotator/*.vcf.gz.tbi"
+      - "**/vcf_expression_annotator/*.vcf.gz*"
   
   # Split transcript count files from SPLIT_TRANSCRIPT_COUNTS process
   transcript_counts:
