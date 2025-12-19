@@ -1,24 +1,9 @@
 reports:
-  # CSV outputs from VCF_TO_CSV process
-  neoantigen_csv:
-    display: "Neoantigen CSV Reports"
-    patterns:
-      - "**/clean_vcf/*_neoantigen.csv"
-    
-  # Cleaned VCF files from CLEAN_VCF process  
-  clean_vcf:
-    display: "Cleaned VCF Files"
-    patterns:
-      - "**/clean_vcf/*.vcf.gz*"
-  
-  # Expression-annotated VCF files from VCF_EXPRESSION_ANNOTATOR process
-  expression_vcf:
-    display: "Expression-Annotated VCF Files"
-    patterns:
-      - "**/vcf_expression_annotator/*.vcf.gz*"
-  
-  # Split transcript count files from SPLIT_TRANSCRIPT_COUNTS process
-  transcript_counts:
-    display: "Split Transcript Counts"
-    patterns:
-      - "**/split_transcript_counts/*.tsv"
+  "report.html":
+    display: "Nextflow execution report"
+  "timeline.html":
+    display: "Nextflow execution timeline"
+  "trace.txt":
+    display: "Nextflow trace file"
+  "dag.html":
+    display: "Nextflow workflow diagram"
