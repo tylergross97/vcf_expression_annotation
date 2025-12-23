@@ -42,6 +42,19 @@ def validateParameters() {
 }
 
 workflow {
+    // Set derived output directories if outdir_base is provided but derived params are not
+    if (params.outdir_base) {
+        if (!params.outdir_split_transcript_counts) {
+            params.outdir_split_transcript_counts = "${params.outdir_base}/split_transcript_counts"
+        }
+        if (!params.outdir_vcf_expression_annotator) {
+            params.outdir_vcf_expression_annotator = "${params.outdir_base}/vcf_expression_annotator"
+        }
+        if (!params.outdir_clean_vcf) {
+            params.outdir_clean_vcf = "${params.outdir_base}/clean_vcf"
+        }
+    }
+    
     // Validate parameters (skip if using test profile)
     if (workflow.profile != 'test') {
         validateParameters()
