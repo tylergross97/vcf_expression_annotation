@@ -1,6 +1,6 @@
 process VCF_TO_CSV {
     container "community.wave.seqera.io/library/cyvcf2:0.31.1--709ec51e0c21a366"
-    publishDir params.outdir_clean_vcf, mode: 'copy', enabled: params.outdir_clean_vcf != null
+    publishDir params.outdir_vcf_to_csv, mode: 'copy', enabled: params.outdir_vcf_to_csv != null
 
     input:
     tuple val(sample_id), val(tumor_sample), path(vcf_path)

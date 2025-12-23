@@ -1,6 +1,34 @@
 #!/usr/bin/env nextflow
 nextflow.enable.dsl = 2
 
+// Derive output directories from outdir_base if not already set
+// This happens at script initialization, before process definitions are evaluated
+if (params.outdir_base && !params.outdir_split_transcript_counts) {
+    params.outdir_split_transcript_counts = "${params.outdir_base}/split_transcript_counts"
+}
+if (params.outdir_base && !params.outdir_vcf_expression_annotator) {
+    params.outdir_vcf_expression_annotator = "${params.outdir_base}/vcf_expression_annotator"
+}
+if (params.outdir_base && !params.outdir_clean_vcf) {
+    params.outdir_clean_vcf = "${params.outdir_base}/clean_vcf"
+}
+if (params.outdir_base && !params.outdir_vcf_to_csv) {
+    params.outdir_vcf_to_csv = "${params.outdir_base}/vcf_to_csv"
+}
+
+// Log derived parameters for debugging
+log.info """
+================================================================================
+Output Directory Configuration:
+================================================================================
+outdir_base:                      ${params.outdir_base}
+outdir_split_transcript_counts:   ${params.outdir_split_transcript_counts}
+outdir_vcf_expression_annotator:  ${params.outdir_vcf_expression_annotator}
+outdir_clean_vcf:                 ${params.outdir_clean_vcf}
+outdir_vcf_to_csv:                ${params.outdir_vcf_to_csv}
+================================================================================
+""".stripIndent()
+
 include { SPLIT_TRANSCRIPT_COUNTS } from './modules/split_transcript_counts.nf'
 include { VCF_EXPRESSION_ANNOTATOR } from './modules/vcf_expression_annotator.nf'
 include { CLEAN_VCF } from './modules/clean_vcf.nf'
@@ -42,19 +70,6 @@ def validateParameters() {
 }
 
 workflow {
-    // Set derived output directories if outdir_base is provided but derived params are not
-    if (params.outdir_base) {
-        if (!params.outdir_split_transcript_counts) {
-            params.outdir_split_transcript_counts = "${params.outdir_base}/split_transcript_counts"
-        }
-        if (!params.outdir_vcf_expression_annotator) {
-            params.outdir_vcf_expression_annotator = "${params.outdir_base}/vcf_expression_annotator"
-        }
-        if (!params.outdir_clean_vcf) {
-            params.outdir_clean_vcf = "${params.outdir_base}/clean_vcf"
-        }
-    }
-    
     // Validate parameters (skip if using test profile)
     if (workflow.profile != 'test') {
         validateParameters()
