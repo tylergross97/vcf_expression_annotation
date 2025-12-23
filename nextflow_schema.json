@@ -4,30 +4,62 @@
   "title": "tylergross97/vcf_expression_annotator pipeline parameters",
   "description": "Nextflow workflow for annotating VCF files with expression data from transcript counts.",
   "type": "object",
+  "required": ["patient_id", "samplesheet", "transcript_counts", "outdir_base"],
+  "properties": {
+    "patient_id": {
+      "type": "string",
+      "description": "Patient ID prefix used in sample naming (must match prefix in transcript counts file)",
+      "help_text": "Example: 'PID_262622_' - Note the trailing underscore is important for matching sample IDs"
+    },
+    "samplesheet": {
+      "type": "string",
+      "format": "file-path",
+      "description": "Path to CSV samplesheet containing sample_id, vcf_path, and vcf_tumor_sample columns",
+      "help_text": "When running on Seqera Platform, use absolute paths (e.g., s3://bucket/path/to/samplesheet.csv) or paths relative to the cloned repository (/.nextflow/assets/...)"
+    },
+    "transcript_counts": {
+      "type": "string",
+      "format": "file-path",
+      "description": "Path to merged transcript counts TSV file from nf-core/rnaseq",
+      "help_text": "Tab-separated file with 'tx' column and one column per sample. When running on Seqera Platform, use absolute paths or repository-relative paths."
+    },
+    "outdir_base": {
+      "type": "string",
+      "description": "Base output directory for all results",
+      "help_text": "Use S3 paths when running on cloud (e.g., s3://bucket/results). Other output directories will be created as subdirectories unless explicitly specified.",
+      "default": "results"
+    },
+    "outdir_split_transcript_counts": {
+      "type": "string",
+      "description": "Output directory for split transcript count files (optional, defaults to outdir_base/split_transcript_counts)",
+      "help_text": "Leave empty to use default location based on outdir_base"
+    },
+    "outdir_vcf_expression_annotator": {
+      "type": "string",
+      "description": "Output directory for VCF files with expression annotations (optional, defaults to outdir_base/vcf_expression_annotator)",
+      "help_text": "Leave empty to use default location based on outdir_base"
+    },
+    "outdir_clean_vcf": {
+      "type": "string",
+      "description": "Output directory for cleaned VCF files (optional, defaults to outdir_base/clean_vcf)",
+      "help_text": "Leave empty to use default location based on outdir_base"
+    }
+  },
   "definitions": {
     "input_parameters": {
       "title": "Input Parameters",
       "type": "object",
       "description": "Required input files and identifiers",
-      "required": ["patient_id", "samplesheet", "transcript_counts"],
+      "fa_icon": "fas fa-file-import",
       "properties": {
         "patient_id": {
-          "type": "string",
-          "description": "Patient ID prefix used in sample naming (must match prefix in transcript counts file)",
-          "help_text": "Example: 'PID_262622_' - Note the trailing underscore is important for matching sample IDs",
-          "pattern": "^.+_$"
+          "type": "string"
         },
         "samplesheet": {
-          "type": "string",
-          "format": "file-path",
-          "description": "Path to CSV samplesheet containing sample_id, vcf_path, and vcf_tumor_sample columns",
-          "help_text": "When running on Seqera Platform, use absolute paths (e.g., s3://bucket/path/to/samplesheet.csv) or paths relative to the cloned repository (/.nextflow/assets/...)"
+          "type": "string"
         },
         "transcript_counts": {
-          "type": "string",
-          "format": "file-path",
-          "description": "Path to merged transcript counts TSV file from nf-core/rnaseq",
-          "help_text": "Tab-separated file with 'tx' column and one column per sample. When running on Seqera Platform, use absolute paths or repository-relative paths."
+          "type": "string"
         }
       }
     },
@@ -35,38 +67,21 @@
       "title": "Output Parameters",
       "type": "object",
       "description": "Output directory configuration",
-      "required": ["outdir_base"],
+      "fa_icon": "fas fa-folder-open",
       "properties": {
         "outdir_base": {
-          "type": "string",
-          "description": "Base output directory for all results",
-          "help_text": "Use S3 paths when running on cloud (e.g., s3://bucket/results). Other output directories will be created as subdirectories unless explicitly specified.",
-          "default": "results"
+          "type": "string"
         },
         "outdir_split_transcript_counts": {
-          "type": "string",
-          "description": "Output directory for split transcript count files (optional, defaults to outdir_base/split_transcript_counts)",
-          "help_text": "Leave empty to use default location based on outdir_base"
+          "type": "string"
         },
         "outdir_vcf_expression_annotator": {
-          "type": "string",
-          "description": "Output directory for VCF files with expression annotations (optional, defaults to outdir_base/vcf_expression_annotator)",
-          "help_text": "Leave empty to use default location based on outdir_base"
+          "type": "string"
         },
         "outdir_clean_vcf": {
-          "type": "string",
-          "description": "Output directory for cleaned VCF files (optional, defaults to outdir_base/clean_vcf)",
-          "help_text": "Leave empty to use default location based on outdir_base"
+          "type": "string"
         }
       }
     }
-  },
-  "allOf": [
-    {
-      "$ref": "#/definitions/input_parameters"
-    },
-    {
-      "$ref": "#/definitions/output_parameters"
-    }
-  ]
+  }
 }
