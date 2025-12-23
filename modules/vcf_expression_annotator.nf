@@ -1,6 +1,6 @@
 process VCF_EXPRESSION_ANNOTATOR {
     container "griffithlab/vatools:latest"
-    publishDir params.outdir_vcf_expression_annotator, mode: 'copy'
+    publishDir params.outdir_vcf_expression_annotator, mode: 'copy', enabled: params.outdir_vcf_expression_annotator != null
 
     input:
        tuple val(sample_id), file(vcf_path), val(tumor_sample), file(expr_table)

@@ -1,6 +1,6 @@
 process SPLIT_TRANSCRIPT_COUNTS {
     container "community.wave.seqera.io/library/pandas_python:4330fd07d14e9bfb"
-    publishDir params.outdir_split_transcript_counts, mode: 'copy'
+    publishDir params.outdir_split_transcript_counts, mode: 'copy', enabled: params.outdir_split_transcript_counts != null
 
     input:
     path transcript_counts
