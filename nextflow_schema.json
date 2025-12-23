@@ -4,7 +4,7 @@
   "title": "tylergross97/vcf_expression_annotator pipeline parameters",
   "description": "Nextflow workflow for annotating VCF files with expression data from transcript counts.",
   "type": "object",
-  "required": ["patient_id", "samplesheet", "transcript_counts", "outdir_base"],
+  "required": ["patient_id", "samplesheet", "transcript_counts", "outdir"],
   "properties": {
     "patient_id": {
       "type": "string",
@@ -23,26 +23,11 @@
       "description": "Path to merged transcript counts TSV file from nf-core/rnaseq",
       "help_text": "Tab-separated file with 'tx' column and one column per sample. When running on Seqera Platform, use absolute paths or repository-relative paths."
     },
-    "outdir_base": {
+    "outdir": {
       "type": "string",
-      "description": "Base output directory for all results",
-      "help_text": "⚠️ IMPORTANT: When running on Seqera Platform with test profile, you MUST override this with an S3 path (e.g., s3://bucket/results) to ensure outputs are published to cloud storage. Local paths like ${projectDir} will publish inside the container only.",
-      "default": "results"
-    },
-    "outdir_split_transcript_counts": {
-      "type": "string",
-      "description": "Output directory for split transcript count files (optional, defaults to outdir_base/split_transcript_counts)",
-      "help_text": "Leave empty to use default location based on outdir_base"
-    },
-    "outdir_vcf_expression_annotator": {
-      "type": "string",
-      "description": "Output directory for VCF files with expression annotations (optional, defaults to outdir_base/vcf_expression_annotator)",
-      "help_text": "Leave empty to use default location based on outdir_base"
-    },
-    "outdir_clean_vcf": {
-      "type": "string",
-      "description": "Output directory for cleaned VCF files (optional, defaults to outdir_base/clean_vcf)",
-      "help_text": "Leave empty to use default location based on outdir_base"
+      "description": "Output directory for all results",
+      "help_text": "For local runs: 'results' or any local path. For Seqera Platform: use S3 path (e.g., s3://bucket/path). This parameter must be provided on the command line when using test profile.",
+      "default": null
     }
   },
   "definitions": {
@@ -69,16 +54,7 @@
       "description": "Output directory configuration",
       "fa_icon": "fas fa-folder-open",
       "properties": {
-        "outdir_base": {
-          "type": "string"
-        },
-        "outdir_split_transcript_counts": {
-          "type": "string"
-        },
-        "outdir_vcf_expression_annotator": {
-          "type": "string"
-        },
-        "outdir_clean_vcf": {
+        "outdir": {
           "type": "string"
         }
       }
