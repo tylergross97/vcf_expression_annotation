@@ -26,7 +26,7 @@
     "outdir_base": {
       "type": "string",
       "description": "Base output directory for all results",
-      "help_text": "Use S3 paths when running on cloud (e.g., s3://bucket/results). Other output directories will be created as subdirectories unless explicitly specified.",
+      "help_text": "⚠️ IMPORTANT: When running on Seqera Platform with test profile, you MUST override this with an S3 path (e.g., s3://bucket/results) to ensure outputs are published to cloud storage. Local paths like ${projectDir} will publish inside the container only.",
       "default": "results"
     },
     "outdir_split_transcript_counts": {

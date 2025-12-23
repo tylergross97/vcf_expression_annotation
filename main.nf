@@ -47,6 +47,23 @@ workflow {
         validateParameters()
     }
     
+    // Warn if using test profile on cloud with local output paths
+    if (workflow.profile.contains('test') && 
+        workflow.workDir.startsWith('s3://') && 
+        params.outdir_base.startsWith(workflow.projectDir.toString())) {
+        log.warn """
+        ⚠️  WARNING: Using test profile on cloud with local output directory!
+        
+        Current outdir_base: ${params.outdir_base}
+        This will publish outputs inside the container, not to S3.
+        
+        RECOMMENDATION: Override outdir_base with an S3 path:
+        --outdir_base 's3://your-bucket/results'
+        
+        Or update your pipeline configuration on Seqera Platform to set outdir_base.
+        """.stripIndent()
+    }
+    
     // Set input ch_transcript_counts which is the transcript counts file specified in the nextflow.config file and was generated from nf-core/rna-seq
     ch_transcript_counts = Channel.fromPath(params.transcript_counts)
     // Run the SPLIT_TRANSCRIPT_COUNTS process to split the transcript counts file into individual sample files
