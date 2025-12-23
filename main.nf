@@ -42,9 +42,39 @@ def validateParameters() {
 }
 
 workflow {
+    // Set derived output directories if outdir_base is provided but derived params are not
+    if (params.outdir_base) {
+        if (!params.outdir_split_transcript_counts) {
+            params.outdir_split_transcript_counts = "${params.outdir_base}/split_transcript_counts"
+        }
+        if (!params.outdir_vcf_expression_annotator) {
+            params.outdir_vcf_expression_annotator = "${params.outdir_base}/vcf_expression_annotator"
+        }
+        if (!params.outdir_clean_vcf) {
+            params.outdir_clean_vcf = "${params.outdir_base}/clean_vcf"
+        }
+    }
+    
     // Validate parameters (skip if using test profile)
     if (workflow.profile != 'test') {
         validateParameters()
+    }
+    
+    // Warn if using test profile on cloud with local output paths
+    if (workflow.profile.contains('test') && 
+        workflow.workDir.startsWith('s3://') && 
+        params.outdir_base.startsWith(workflow.projectDir.toString())) {
+        log.warn """
+        ⚠️  WARNING: Using test profile on cloud with local output directory!
+        
+        Current outdir_base: ${params.outdir_base}
+        This will publish outputs inside the container, not to S3.
+        
+        RECOMMENDATION: Override outdir_base with an S3 path:
+        --outdir_base 's3://your-bucket/results'
+        
+        Or update your pipeline configuration on Seqera Platform to set outdir_base.
+        """.stripIndent()
     }
     
     // Set input ch_transcript_counts which is the transcript counts file specified in the nextflow.config file and was generated from nf-core/rna-seq

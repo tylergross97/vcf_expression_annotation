@@ -1,6 +1,6 @@
 process CLEAN_VCF {
     container "community.wave.seqera.io/library/python:3.11.0--73cecb2a04197534"
-    publishDir params.outdir_clean_vcf, mode: 'copy'
+    publishDir params.outdir_clean_vcf, mode: 'copy', enabled: params.outdir_clean_vcf != null
 
     input:
     tuple val(sample_id), val(tumor_sample), file(vcf_path)
