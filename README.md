@@ -128,7 +128,7 @@ nextflow run main.nf -profile docker \
     --patient_id 'PID_262622_' \
     --samplesheet 'samplesheet.csv' \
     --transcript_counts 'salmon.merged.transcript_counts.tsv' \
-    --outdir_base 'results'
+    --outdir 'results'
 ```
 
 ## 📦 Installation
@@ -165,7 +165,7 @@ nextflow run main.nf \
     --patient_id 'PID_123_' \          # Patient identifier prefix (MUST end with _)
     --samplesheet 'samples.csv' \       # Sample metadata CSV
     --transcript_counts 'counts.tsv' \  # Merged transcript counts from nf-core/rnaseq
-    --outdir_base 'results'             # Output directory
+    --outdir 'results'                  # Output directory
 ```
 
 #### Parameter Details
@@ -175,7 +175,7 @@ nextflow run main.nf \
 | `--patient_id` | String | Patient identifier prefix for matching sample IDs.<br/>⚠️ **Must end with underscore** | `'PID_262622_'` |
 | `--samplesheet` | Path | CSV file with sample metadata and VCF locations | `'metadata/samples.csv'` |
 | `--transcript_counts` | Path | Merged transcript counts TSV from nf-core/rnaseq | `'salmon.merged.transcript_counts.tsv'` |
-| `--outdir_base` | String | Base directory for all pipeline outputs | `'results'` or `'output'` |
+| `--outdir` | String | Base directory for all pipeline outputs | `'results'` or `'output'` |
 
 > 💡 **Tip**: Use the test profile (`-profile test,docker`) to validate your setup before processing real data.
 
@@ -341,7 +341,7 @@ nextflow run main.nf \
     --patient_id 'PID_262622_' \
     --samplesheet 'metadata/samplesheet.csv' \
     --transcript_counts 'data/salmon.merged.transcript_counts.tsv' \
-    --outdir_base 'results'
+    --outdir 'results'
 ```
 
 ### Example 2: HPC with Singularity and SLURM
@@ -361,7 +361,7 @@ nextflow run main.nf \
     --patient_id 'PID_262622_' \
     --samplesheet '/path/to/samplesheet.csv' \
     --transcript_counts '/path/to/salmon.merged.transcript_counts.tsv' \
-    --outdir_base '/scratch/results' \
+    --outdir '/scratch/results' \
     -resume
 ```
 
@@ -375,7 +375,7 @@ nextflow run main.nf \
     --patient_id 'PID_262622_' \
     --samplesheet 'samplesheet.csv' \
     --transcript_counts 'salmon.merged.transcript_counts.tsv' \
-    --outdir_base 'results' \
+    --outdir 'results' \
     -resume  # ← Resume from last checkpoint
 ```
 
@@ -387,7 +387,7 @@ nextflow run main.nf \
     --patient_id 'PATIENT_001_' \
     --samplesheet 'samples.csv' \
     --transcript_counts 'counts.tsv' \
-    --outdir_base '/data/projects/cancer_study/vcf_annotation_results'
+    --outdir '/data/projects/cancer_study/vcf_annotation_results'
 ```
 
 ### Example 5: Quick Validation with Test Data
@@ -509,7 +509,7 @@ nextflow clean -f
 | **VCF sample name mismatch** | Warning: "Sample not found in VCF" | Run `bcftools query -l file.vcf.gz` to get exact sample name |
 | **Empty TX field** | VCF has no expression values | Verify transcripts in VCF match those in transcript counts file |
 | **Memory errors** | Process killed or out-of-memory | Increase memory in `nextflow.config` for affected process |
-| **Permission denied** | Cannot write to output directory | Check write permissions on `--outdir_base` location |
+| **Permission denied** | Cannot write to output directory | Check write permissions on `--outdir` location |
 
 ### Debugging Steps
 

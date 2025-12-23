@@ -1,31 +1,15 @@
 #!/usr/bin/env nextflow
 nextflow.enable.dsl = 2
 
-// Derive output directories from outdir_base if not already set
-// This happens at script initialization, before process definitions are evaluated
-if (params.outdir_base && !params.outdir_split_transcript_counts) {
-    params.outdir_split_transcript_counts = "${params.outdir_base}/split_transcript_counts"
-}
-if (params.outdir_base && !params.outdir_vcf_expression_annotator) {
-    params.outdir_vcf_expression_annotator = "${params.outdir_base}/vcf_expression_annotator"
-}
-if (params.outdir_base && !params.outdir_clean_vcf) {
-    params.outdir_clean_vcf = "${params.outdir_base}/clean_vcf"
-}
-if (params.outdir_base && !params.outdir_vcf_to_csv) {
-    params.outdir_vcf_to_csv = "${params.outdir_base}/vcf_to_csv"
-}
-
-// Log derived parameters for debugging
+// Log pipeline parameters
 log.info """
 ================================================================================
-Output Directory Configuration:
+VCF Expression Annotation Pipeline
 ================================================================================
-outdir_base:                      ${params.outdir_base}
-outdir_split_transcript_counts:   ${params.outdir_split_transcript_counts}
-outdir_vcf_expression_annotator:  ${params.outdir_vcf_expression_annotator}
-outdir_clean_vcf:                 ${params.outdir_clean_vcf}
-outdir_vcf_to_csv:                ${params.outdir_vcf_to_csv}
+Patient ID:        ${params.patient_id}
+Samplesheet:       ${params.samplesheet}
+Transcript Counts: ${params.transcript_counts}
+Output Directory:  ${params.outdir}
 ================================================================================
 """.stripIndent()
 
@@ -40,7 +24,7 @@ def validateParameters() {
         'patient_id': params.patient_id,
         'samplesheet': params.samplesheet,
         'transcript_counts': params.transcript_counts,
-        'outdir_base': params.outdir_base
+        'outdir': params.outdir
     ]
     
     def missingParams = []
@@ -61,10 +45,10 @@ def validateParameters() {
             --patient_id 'PID_123_' \\
             --samplesheet 'path/to/samplesheet.csv' \\
             --transcript_counts 'path/to/transcript_counts.tsv' \\
-            --outdir_base 'results'
+            --outdir 'results'
         
         Or use the test profile:
-        nextflow run main.nf -profile test
+        nextflow run main.nf -profile test,docker --outdir <OUTDIR>
         """
     }
 }
@@ -78,17 +62,17 @@ workflow {
     // Warn if using test profile on cloud with local output paths
     if (workflow.profile.contains('test') && 
         workflow.workDir.startsWith('s3://') && 
-        params.outdir_base.startsWith(workflow.projectDir.toString())) {
+        params.outdir.startsWith(workflow.projectDir.toString())) {
         log.warn """
         ⚠️  WARNING: Using test profile on cloud with local output directory!
         
-        Current outdir_base: ${params.outdir_base}
+        Current outdir: ${params.outdir}
         This will publish outputs inside the container, not to S3.
         
-        RECOMMENDATION: Override outdir_base with an S3 path:
-        --outdir_base 's3://your-bucket/results'
+        RECOMMENDATION: Override outdir with an S3 path:
+        --outdir 's3://your-bucket/results'
         
-        Or update your pipeline configuration on Seqera Platform to set outdir_base.
+        Or update your pipeline configuration on Seqera Platform to set outdir.
         """.stripIndent()
     }
     
