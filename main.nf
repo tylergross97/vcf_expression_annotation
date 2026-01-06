@@ -1,12 +1,22 @@
 #!/usr/bin/env nextflow
 nextflow.enable.dsl = 2
 
+// Log pipeline parameters
+log.info """
+================================================================================
+VCF Expression Annotation Pipeline
+================================================================================
+Patient ID:        ${params.patient_id}
+Samplesheet:       ${params.samplesheet}
+Transcript Counts: ${params.transcript_counts}
+Output Directory:  ${params.outdir}
+================================================================================
+""".stripIndent()
+
 include { SPLIT_TRANSCRIPT_COUNTS } from './modules/split_transcript_counts.nf'
 include { VCF_EXPRESSION_ANNOTATOR } from './modules/vcf_expression_annotator.nf'
 include { CLEAN_VCF } from './modules/clean_vcf.nf'
 include { VCF_TO_CSV } from './modules/vcf_to_csv.nf'
-include { PIPELINE_STATS } from './modules/pipeline_stats.nf'
-include { MULTIQC } from './modules/multiqc.nf'
 
 // Parameter validation function
 def validateParameters() {
@@ -44,18 +54,6 @@ def validateParameters() {
 }
 
 workflow {
-    // Log pipeline parameters
-    log.info """
-    ================================================================================
-    VCF Expression Annotation Pipeline
-    ================================================================================
-    Patient ID:        ${params.patient_id}
-    Samplesheet:       ${params.samplesheet}
-    Transcript Counts: ${params.transcript_counts}
-    Output Directory:  ${params.outdir}
-    ================================================================================
-    """.stripIndent()
-    
     // Validate parameters (skip if using test profile)
     if (workflow.profile != 'test') {
         validateParameters()
@@ -79,7 +77,7 @@ workflow {
     }
     
     // Set input ch_transcript_counts which is the transcript counts file specified in the nextflow.config file and was generated from nf-core/rna-seq
-    ch_transcript_counts = channel.fromPath(params.transcript_counts)
+    ch_transcript_counts = Channel.fromPath(params.transcript_counts)
     // Run the SPLIT_TRANSCRIPT_COUNTS process to split the transcript counts file into individual sample files
     SPLIT_TRANSCRIPT_COUNTS(ch_transcript_counts)
     
@@ -92,7 +90,7 @@ workflow {
             tuple(sample_id, file)
         }
     // Read in the samplesheet which contains the sample IDs that correspond to the sample_id in ch_split_counts and information about the vcf files and create a channel
-    ch_samplesheet = channel
+    ch_samplesheet = Channel
         .fromPath(params.samplesheet)
         .splitCsv(header:true)
         .map { row -> 
@@ -106,31 +104,8 @@ workflow {
         ch_split_counts,
         by: 0 // join on sample_id
     )
-    ch_patient_id = channel.value(params.patient_id)
+    ch_patient_id = Channel.value(params.patient_id)
     VCF_EXPRESSION_ANNOTATOR(ch_joined, ch_patient_id)
     CLEAN_VCF(VCF_EXPRESSION_ANNOTATOR.out.expression_vep_vcf, ch_patient_id)
     VCF_TO_CSV(CLEAN_VCF.out.clean_vcf, ch_patient_id)
-    
-    // Generate pipeline statistics
-    ch_csv_files = VCF_TO_CSV.out.csv.map { _patient_id, _sample_id, _tumor_sample, csv -> csv }
-    PIPELINE_STATS(
-        ch_csv_files.collect(),
-        ch_patient_id
-    )
-    
-    // Collect all outputs for MultiQC
-    ch_multiqc_files = channel.empty()
-    ch_multiqc_files = ch_multiqc_files.mix(ch_csv_files)
-    ch_multiqc_files = ch_multiqc_files.mix(CLEAN_VCF.out.clean_vcf.map { _sample_id, _tumor_sample, vcf -> vcf })
-    ch_multiqc_files = ch_multiqc_files.mix(PIPELINE_STATS.out.stats)
-    
-    // Add MultiQC config
-    ch_multiqc_config = channel.fromPath("${projectDir}/assets/multiqc_config.yml")
-    
-    // Run MultiQC
-    MULTIQC(
-        ch_multiqc_files.collect(),
-        ch_multiqc_config,
-        ch_patient_id
-    )
 }
