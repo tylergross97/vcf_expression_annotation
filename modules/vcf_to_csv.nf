@@ -120,5 +120,8 @@ process VCF_TO_CSV {
 
     # Main execution
     vcf_to_csv("${vcf_path}", "${patient_id}${sample_id}_neoantigen.csv", "${tumor_sample}")
+    
+    # Demo change: Add completion timestamp for resume demonstration
+    echo "VCF_TO_CSV completed at: \$(date '+%Y-%m-%d %H:%M:%S')" >&2
     """
 }
