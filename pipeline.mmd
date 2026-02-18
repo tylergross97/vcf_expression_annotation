@@ -1,0 +1,20 @@
+%%metro title: VCF Expression Annotation Pipeline
+%%metro style: dark
+%%metro line: expression | Expression | #4CAF50
+%%metro line: vcf | VCF Processing | #2196F3
+
+graph LR
+    transcript_counts[Transcript Counts]
+    samplesheet[Samplesheet]
+    split[SPLIT_TRANSCRIPT_COUNTS]
+    annotate[VCF_EXPRESSION_ANNOTATOR]
+    clean[CLEAN_VCF]
+    csv[VCF_TO_CSV]
+    output[Output CSV]
+
+    transcript_counts -->|expression| split
+    split -->|expression| annotate
+    samplesheet -->|vcf| annotate
+    annotate -->|vcf| clean
+    clean -->|vcf| csv
+    csv -->|vcf| output
