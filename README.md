@@ -6,6 +6,8 @@
 
 Nextflow pipeline that annotates VCF variants with RNA-seq transcript expression data using [vcf-expression-annotator](https://github.com/griffithlab/VAtools). Integrates output from [nf-core/rnaseq](https://nf-co.re/rnaseq) and [nf-core/sarek](https://nf-co.re/sarek).
 
+![Pipeline diagram](pipeline.svg)
+
 ## Quick Start
 
 ```bash
