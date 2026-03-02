@@ -109,3 +109,37 @@ workflow {
     CLEAN_VCF(VCF_EXPRESSION_ANNOTATOR.out.expression_vep_vcf, ch_patient_id)
     VCF_TO_CSV(CLEAN_VCF.out.clean_vcf, ch_patient_id)
 }
+
+// Publish Nextflow built-in reports to output directory
+workflow.onComplete {
+    def reportDir = file("${params.outdir}/pipeline_info/${workflow.runName}")
+    reportDir.mkdirs()
+    
+    // Copy built-in reports to the output directory
+    def reportFiles = [
+        'report': workflow.report,
+        'timeline': workflow.timeline, 
+        'trace': workflow.trace,
+        'dag': workflow.dag
+    ]
+    
+    reportFiles.each { name, reportFile ->
+        if (reportFile && reportFile.exists()) {
+            def destFile = new File(reportDir, "${name}.html")
+            if (name == 'trace') {
+                destFile = new File(reportDir, "trace.txt")
+            }
+            reportFile.copyTo(destFile)
+            log.info "Published ${name} report to: ${destFile}"
+        }
+    }
+    
+    log.info """
+    ================================================================================
+    Pipeline Completed!
+    ================================================================================
+    Status:      ${workflow.success ? 'SUCCESS' : 'FAILED'}
+    Reports Dir: ${reportDir}
+    ================================================================================
+    """.stripIndent()
+}
