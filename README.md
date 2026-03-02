@@ -47,6 +47,17 @@ results/clean_vcf/
 └── {sample_id}.clean.csv    # CSV export
 ```
 
+## Reports
+
+Nextflow automatically generates execution reports:
+
+- **Report HTML**: Workflow metrics, resource usage, task statistics
+- **Timeline HTML**: Visual timeline of task execution
+- **Trace TXT**: Detailed task-level metrics (CPU, memory, duration)
+- **DAG HTML**: Workflow diagram showing process dependencies
+
+Reports are configured in `nextflow.config` and generated automatically. When run on Seqera Platform, these reports are displayed in the platform UI.
+
 ## Troubleshooting
 
 - Ensure `--patient_id` ends with `_`

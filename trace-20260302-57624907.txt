@@ -1,0 +1,2 @@
+task_id	hash	native_id	name	status	exit	submit	duration	realtime	%cpu	peak_rss	peak_vmem	rchar	wchar
+1	56/a5f985	2936	SPLIT_TRANSCRIPT_COUNTS (1)	FAILED	126	2026-03-02 16:00:27.011	119ms	36ms	-	-	-	-	-

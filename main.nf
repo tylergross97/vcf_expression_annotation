@@ -110,39 +110,21 @@ workflow {
     VCF_TO_CSV(CLEAN_VCF.out.clean_vcf, ch_patient_id)
 }
 
-// Publish Nextflow built-in reports to output directory
+// Workflow completion handler
 workflow.onComplete {
-    def reportDir = file("${params.outdir}/pipeline_info/${workflow.runName}")
-    reportDir.mkdirs()
-    
-    // Map of report names to their file paths
-    def reportPaths = [
-        'report.html': workflow.report?.toString(),
-        'timeline.html': workflow.timeline?.toString(), 
-        'trace.txt': workflow.trace?.toString(),
-        'dag.html': workflow.dag?.toString()
-    ]
-    
-    // Copy built-in reports to the output directory
-    reportPaths.each { fileName, filePath ->
-        if (filePath) {
-            def sourceFile = file(filePath)
-            if (sourceFile.exists()) {
-                def destFile = file("${reportDir}/${fileName}")
-                sourceFile.copyTo(destFile)
-                log.info "✓ Published ${fileName} to: ${destFile}"
-            } else {
-                log.warn "✗ Report file not found: ${filePath}"
-            }
-        }
-    }
-    
     log.info """
     ================================================================================
-    Pipeline Completed!
+    VCF Expression Annotation Pipeline Completed!
     ================================================================================
-    Status:      ${workflow.success ? 'SUCCESS' : 'FAILED'}
-    Reports Dir: ${reportDir}
+    Status:       ${workflow.success ? 'SUCCESS ✓' : 'FAILED ✗'}
+    Run Name:     ${workflow.runName}
+    Patient ID:   ${params.patient_id}
+    Output Dir:   ${params.outdir}
+    Duration:     ${workflow.duration}
     ================================================================================
     """.stripIndent()
+    
+    if (!workflow.success) {
+        log.error "Pipeline failed. Please check the error messages above."
+    }
 }
