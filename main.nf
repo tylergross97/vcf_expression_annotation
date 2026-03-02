@@ -115,22 +115,25 @@ workflow.onComplete {
     def reportDir = file("${params.outdir}/pipeline_info/${workflow.runName}")
     reportDir.mkdirs()
     
-    // Copy built-in reports to the output directory
-    def reportFiles = [
-        'report': workflow.report,
-        'timeline': workflow.timeline, 
-        'trace': workflow.trace,
-        'dag': workflow.dag
+    // Map of report names to their file paths
+    def reportPaths = [
+        'report.html': workflow.report?.toString(),
+        'timeline.html': workflow.timeline?.toString(), 
+        'trace.txt': workflow.trace?.toString(),
+        'dag.html': workflow.dag?.toString()
     ]
     
-    reportFiles.each { name, reportFile ->
-        if (reportFile && reportFile.exists()) {
-            def destFile = new File(reportDir, "${name}.html")
-            if (name == 'trace') {
-                destFile = new File(reportDir, "trace.txt")
+    // Copy built-in reports to the output directory
+    reportPaths.each { fileName, filePath ->
+        if (filePath) {
+            def sourceFile = file(filePath)
+            if (sourceFile.exists()) {
+                def destFile = file("${reportDir}/${fileName}")
+                sourceFile.copyTo(destFile)
+                log.info "✓ Published ${fileName} to: ${destFile}"
+            } else {
+                log.warn "✗ Report file not found: ${filePath}"
             }
-            reportFile.copyTo(destFile)
-            log.info "Published ${name} report to: ${destFile}"
         }
     }
     
