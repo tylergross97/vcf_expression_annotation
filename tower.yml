@@ -1,9 +1,9 @@
 reports:
-  "report.html":
+  "**/reports/report.html":
     display: "Nextflow execution report"
-  "timeline.html":
+  "**/reports/timeline.html":
     display: "Nextflow execution timeline"
-  "trace.txt":
+  "**/reports/trace.txt":
     display: "Nextflow trace file"
-  "dag.html":
+  "**/reports/dag.html":
     display: "Nextflow workflow diagram"
