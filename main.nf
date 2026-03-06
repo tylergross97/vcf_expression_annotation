@@ -94,7 +94,7 @@ workflow {
         .fromPath(params.samplesheet)
         .splitCsv(header:true)
         .map { row -> 
-            def vcf_file = row.vcf_path.startsWith('/') ?
+            def vcf_file = (row.vcf_path.startsWith('/') || row.vcf_path.contains('://')) ?
                 file(row.vcf_path) :
                 file("${projectDir}/${row.vcf_path}")
             tuple(row.sample_id, vcf_file, row.vcf_tumor_sample)
@@ -109,3 +109,4 @@ workflow {
     CLEAN_VCF(VCF_EXPRESSION_ANNOTATOR.out.expression_vep_vcf, ch_patient_id)
     VCF_TO_CSV(CLEAN_VCF.out.clean_vcf, ch_patient_id)
 }
+
