@@ -47,6 +47,44 @@ results/clean_vcf/
 └── {sample_id}.clean.csv    # CSV export
 ```
 
+## Testing
+
+This pipeline uses [nf-test](https://www.nf-test.com/) for automated testing with the `nft-vcf` and `nft-csv` plugins.
+
+### Prerequisites
+
+Install nf-test (requires Java 11+):
+
+```bash
+curl -fsSL https://code.askimed.com/install/nf-test | bash
+mv nf-test /usr/local/bin/   # or anywhere on your PATH
+```
+
+### Run all tests
+
+```bash
+nf-test test
+```
+
+This uses the configuration in `nf-test.config`, which automatically applies the `test,docker` profile and loads the required plugins.
+
+### Run specific tests
+
+```bash
+# Full pipeline integration test
+nf-test test tests/main.nf.test
+
+# Individual module tests
+nf-test test tests/modules/split_transcript_counts.nf.test
+nf-test test tests/modules/vcf_expression_annotator.nf.test
+nf-test test tests/modules/clean_vcf.nf.test
+nf-test test tests/modules/vcf_to_csv.nf.test
+```
+
+### Test data
+
+Test fixtures live in `tests/data/` and the sample sheet used for testing is at `tests/samplesheet.csv`. The test profile (`-profile test`) configures paths to these fixtures automatically.
+
 ## Troubleshooting
 
 - Ensure `--patient_id` ends with `_`
