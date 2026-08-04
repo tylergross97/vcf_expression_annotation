@@ -1,18 +1,6 @@
 #!/usr/bin/env nextflow
 nextflow.enable.dsl = 2
 
-// Log pipeline parameters
-log.info """
-================================================================================
-VCF Expression Annotation Pipeline
-================================================================================
-Patient ID:        ${params.patient_id}
-Samplesheet:       ${params.samplesheet}
-Transcript Counts: ${params.transcript_counts}
-Output Directory:  ${params.outdir}
-================================================================================
-""".stripIndent()
-
 include { SPLIT_TRANSCRIPT_COUNTS } from './modules/split_transcript_counts.nf'
 include { VCF_EXPRESSION_ANNOTATOR } from './modules/vcf_expression_annotator.nf'
 include { CLEAN_VCF } from './modules/clean_vcf.nf'
@@ -54,6 +42,18 @@ def validateParameters() {
 }
 
 workflow {
+    // Log pipeline parameters
+    log.info """
+        ================================================================================
+        VCF Expression Annotation Pipeline
+        ================================================================================
+        Patient ID:        ${params.patient_id}
+        Samplesheet:       ${params.samplesheet}
+        Transcript Counts: ${params.transcript_counts}
+        Output Directory:  ${params.outdir}
+        ================================================================================
+        """.stripIndent()
+
     // Validate parameters (skip if using test profile)
     if (workflow.profile != 'test') {
         validateParameters()
